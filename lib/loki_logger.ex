@@ -208,7 +208,7 @@ defmodule LokiLogger do
   end
 
   defp format_event(level, msg, ts, md, %{format: format, metadata: keys} = _state) do
-    List.to_string(Logger.Formatter.format(format, level, msg, ts, take_metadata(md, keys)))
+    IO.chardata_to_string(Logger.Formatter.format(format, level, msg, ts, take_metadata(md, keys)))
   end
 
   defp take_metadata(metadata, :all) do
