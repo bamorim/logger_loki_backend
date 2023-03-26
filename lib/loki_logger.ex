@@ -92,7 +92,7 @@ defmodule LokiLogger do
     max_buffer = Keyword.get(config, :max_buffer, 32)
     loki_labels = Keyword.get(config, :loki_labels, %{application: "loki_logger_library"})
     loki_host = Keyword.get(config, :loki_host, "http://localhost:3100")
-    loki_path = Keyword.get(config, :loki_path, "/api/prom/push")
+    loki_path = Keyword.get(config, :loki_path, "/loki/api/v1/push")
     loki_scope_org_id = Keyword.get(config, :loki_scope_org_id, "fake")
 
     %{
@@ -175,7 +175,7 @@ defmodule LokiLogger do
         seconds = Kernel.trunc(ts / 1_000_000_000)
         nanos = ts - seconds * 1_000_000_000
 
-        Logproto.Entry.new(
+        Logproto.EntryAdapter.new(
           timestamp: Google.Protobuf.Timestamp.new(seconds: seconds, nanos: nanos),
           line: line
         )
@@ -184,7 +184,7 @@ defmodule LokiLogger do
     request =
       Logproto.PushRequest.new(
         streams: [
-          Logproto.Stream.new(
+          Logproto.StreamAdapter.new(
             labels: labels,
             entries: sorted_entries
           )

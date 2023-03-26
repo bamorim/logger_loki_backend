@@ -70,7 +70,7 @@ config :logger, :loki_logger,
 only needed for development 
 
 ```shell script
-protoc --proto_path=./lib/proto --elixir_out=./lib lib/proto/loki.proto 
+protoc --proto_path=./lib/proto --elixir_out=./lib/proto lib/proto/push.proto
 ```
 
 ## License

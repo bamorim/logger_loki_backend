@@ -29,7 +29,7 @@ defmodule LokiLogger.MixProject do
       {:json, "~> 1.3"},
       {:ex_doc, ">= 0.0.0", only: :dev},
       {:benchee, "~> 1.0", only: :test},
-      {:protobuf, "~> 0.5.3"},
+      {:protobuf, "~> 0.10.0"},
       {:google_protos, "~> 0.1"},
       {:snappyer, "~> 1.2"}
     ]
