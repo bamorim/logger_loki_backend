@@ -153,15 +153,6 @@ defmodule LokiLogger do
         :noop
 
       {:ok, %HTTPoison.Response{status_code: status_code, body: body}} ->
-        IO.puts(
-          inspect(
-            output
-            |> List.keysort(1)
-            |> Enum.reverse(),
-            pretty: true
-          )
-        )
-
         raise "unexpected status code from loki backend #{status_code}" <>
                 Exception.format_exit(body)
 
