@@ -20,6 +20,6 @@ erl_crash.dump
 *.ez
 
 # Ignore package tarball (built via "mix hex.build").
-loki_logger-*.tar
+logger_loki_backend-*.tar
 
 .idea/

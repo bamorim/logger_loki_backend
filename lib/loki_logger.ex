@@ -1,4 +1,4 @@
-defmodule LokiLogger do
+defmodule LoggerLokiBackend do
   @behaviour :gen_event
   @moduledoc false
 
@@ -13,13 +13,13 @@ defmodule LokiLogger do
             loki_path: nil,
             loki_scope_org_id: nil
 
-  def init(LokiLogger) do
-    config = Application.get_env(:logger, :loki_logger)
+  def init(LoggerLokiBackend) do
+    config = Application.get_env(:logger, :logger_loki_backend)
     {:ok, init(config, %__MODULE__{})}
   end
 
   def init({__MODULE__, opts}) when is_list(opts) do
-    config = configure_merge(Application.get_env(:logger, :loki_logger), opts)
+    config = configure_merge(Application.get_env(:logger, :logger_loki_backend), opts)
     {:ok, init(config, %__MODULE__{})}
   end
 
@@ -72,8 +72,8 @@ defmodule LokiLogger do
   end
 
   defp configure(options, state) do
-    config = configure_merge(Application.get_env(:logger, :loki_logger), options)
-    Application.put_env(:logger, :loki_logger, config)
+    config = configure_merge(Application.get_env(:logger, :logger_loki_backend), options)
+    Application.put_env(:logger, :logger_loki_backend, config)
     init(config, state)
   end
 
@@ -82,7 +82,7 @@ defmodule LokiLogger do
 
     format =
       Logger.Formatter.compile(
-        Keyword.get(config, :format, "$metadata level=$level $levelpad$message")
+        Keyword.get(config, :format, "$metadata level=$level $message")
       )
 
     metadata =
@@ -90,7 +90,7 @@ defmodule LokiLogger do
       |> configure_metadata()
 
     max_buffer = Keyword.get(config, :max_buffer, 32)
-    loki_labels = Keyword.get(config, :loki_labels, %{application: "loki_logger_library"})
+    loki_labels = Keyword.get(config, :loki_labels, %{application: "logger_loki_backend_library"})
     loki_host = Keyword.get(config, :loki_host, "http://localhost:3100")
     loki_path = Keyword.get(config, :loki_path, "/loki/api/v1/push")
     loki_scope_org_id = Keyword.get(config, :loki_scope_org_id, "fake")
@@ -199,7 +199,9 @@ defmodule LokiLogger do
   end
 
   defp format_event(level, msg, ts, md, %{format: format, metadata: keys} = _state) do
-    IO.chardata_to_string(Logger.Formatter.format(format, level, msg, ts, take_metadata(md, keys)))
+    IO.chardata_to_string(
+      Logger.Formatter.format(format, level, msg, ts, take_metadata(md, keys))
+    )
   end
 
   defp take_metadata(metadata, :all) do

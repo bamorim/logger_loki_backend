@@ -1,13 +1,13 @@
-use Mix.Config
+import Config
 
 config :logger,
-  backends: [LokiLogger]
+  backends: [LoggerLokiBackend]
 
-config :logger, :loki_logger,
+config :logger, :logger_loki_backend,
   level: :debug,
-  format: "$metadata level=$level $levelpad$message",
+  format: "$metadata level=$level $message",
   metadata: :all,
   max_buffer: 300,
-  loki_labels: %{application: "loki_logger_library", elixir_node: node()},
+  loki_labels: %{application: "logger_loki_backend_library", elixir_node: node()},
   loki_host: "http://localhost:3100",
   loki_scope_org_id: "acme_inc"

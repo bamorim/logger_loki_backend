@@ -1,6 +1,6 @@
-defmodule LokiLoggerTest do
+defmodule LoggerLokiBackendTest do
   use ExUnit.Case
-  doctest LokiLogger
+  doctest LoggerLokiBackend
   require Logger
 
   test "greets the world" do

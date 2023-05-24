@@ -1,8 +1,17 @@
-# LokiLogger
+# LoggerLokiBackend
 
-LokiLogger is an Elixir logger backend providing support for Logging to [Grafana Loki](https://github.com/grafana/loki)
+LoggerLokiBackend is an Elixir logger backend providing support for Logging directly to
+[Grafana Loki](https://github.com/grafana/loki)
 
-[![Hex.pm Version](http://img.shields.io/hexpm/v/loki_logger.svg?style=flat)](https://hex.pm/packages/loki_logger)
+[![Hex.pm Version](http://img.shields.io/hexpm/v/logger_loki_backend.svg?style=flat)](https://hex.pm/packages/logger_loki_backend)
+
+It is a fork of [LokiLogger](https://github.com/wardbekker/LokiLogger) that was updated to use
+[Loki's new push API](https://grafana.com/docs/loki/latest/api/#push-log-entries-to-loki).
+
+Also, the main intended usage of this is for development environment, where I normally run Loki
+inside a docker container but my application runs on my machine, which make hard to implement a
+solution to get the logs from my application into Loki, hence I won't be focusing right now on
+production-grade performance.
 
 ## Known issues
 
@@ -15,20 +24,17 @@ LokiLogger is an Elixir logger backend providing support for Logging to [Grafana
     * [x] Loki Scope-Org-Id header for multi-tenancy
 * [x] Timezone aware
 * [X] Snappy compressed proto format in the HTTP Body  
-* [ ] Async http call to backend.
-* [ ] Proper unit tests.
-* [ ] HTTP post retry strategy on temporary loki backend failure or network hiccups.
-* [ ] Authentication with basic auth and/or Oauth2 reverse proxy.
-* [ ] CI build integration (e.g. TravisCI) 
+* [X] Use [Loki's new push API](https://grafana.com/docs/loki/latest/api/#push-log-entries-to-loki)
+* [ ] Proper tests.
 
 ## Installation
 
-The package can be installed by adding `loki_logger` to your list of dependencies in `mix.exs`:
+The package can be installed by adding `logger_loki_backend` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
   [
-    {:loki_logger, "~> 0.3.0"}
+    {:logger_loki_backend, "~> 0.3.0"}
   ]
 end
 ```
@@ -43,25 +49,25 @@ Loki Logger's behavior is controlled using the application configuration environ
 * __loki_labels__ : the Loki log labels used to select the log stream in e.g. Grafana 
 * __loki_scope_org_id__: optional tenant ID for multitenancy. Currently not (yet?) supported in Grafana when enforced with `auth_enabled: true` in Loki config 
 * __level__: logging threshold. Messages "above" this threshold will be discarded. The supported levels, ordered by precedence are :debug, :info, :warn, :error.
-* __format__: the format message used to print logs. Defaults to: "$metadata level=$level $levelpad$message". It may also be a {module, function} tuple that is invoked with the log level, the message, the current timestamp and the metadata.
+* __format__: the format message used to print logs. Defaults to: "$metadata level=$level $message". It may also be a {module, function} tuple that is invoked with the log level, the message, the current timestamp and the metadata.
 * __metadata__: the metadata to be printed by $metadata. Defaults to to :all, which prints all metadata.
 * __max_buffer__: the amount of entries to buffer before posting to the Loki REST api. Defaults to 32.  
 
 For example, the following `config/config.exs` file sets up Loki Logger using
-level debug, with `application` label `loki_logger_library`. 
+level debug, with `application` label `logger_loki_backend_library`. 
 
 ```elixir
 use Mix.Config
 
 config :logger,
-       backends: [LokiLogger]
+       backends: [LoggerLokiBackend]
 
-config :logger, :loki_logger,
+config :logger, :logger_loki_backend,
        level: :debug,
-       format: "$metadata level=$level $levelpad$message",
+       format: "$metadata level=$level $message",
        metadata: :all,
        max_buffer: 300,
-       loki_labels: %{application: "loki_logger_library", elixir_node: node()},
+       loki_labels: %{application: "logger_loki_backend_library", elixir_node: node()},
        loki_host: "http://localhost:3100"
 ```
 
@@ -75,9 +81,11 @@ protoc --proto_path=./lib/proto --elixir_out=./lib/proto lib/proto/push.proto
 
 ## License
 
-Loki Logger is copyright (c) 2019 Ward Bekker 
+LoggerLokiBackend is a fork of [LokiLogger](https://github.com/wardbekker/LokiLogger), which was
+licensed under Apache v2.0 License and copyrighted to Ward Bekker.
 
-The source code is released under the Apache v2.0 License.
+Existing unmodified code still retains the same license, but new code is copyright of Bernardo
+Amorim, also released under Apache v2.0 License.
 
 Check [LICENSE](LICENSE) for more information.
 

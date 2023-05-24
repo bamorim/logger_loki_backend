@@ -1,17 +1,19 @@
-defmodule LokiLogger.MixProject do
+defmodule LoggerLokiBackend.MixProject do
   use Mix.Project
+
+  @source_url "https://github.com/bamorim/logger_loki_backend"
 
   def project do
     [
-      app: :loki_logger,
-      version: "0.3.1",
+      app: :logger_loki_backend,
+      version: "0.0.1-rc.0",
       elixir: "~> 1.8",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       description: description(),
       package: package(),
-      name: "Loki Logger",
-      source_url: "https://github.com/wardbekker/LokiLogger.git"
+      name: "Logger Loki Backend",
+      source_url: @source_url
     ]
   end
 
@@ -41,11 +43,11 @@ defmodule LokiLogger.MixProject do
 
   defp package() do
     [
-      name: "loki_logger",
+      name: "logger_loki_backend",
       # These are the default files included in the package
       files: ~w(lib .formatter.exs mix.exs README* LICENSE*),
       licenses: ["Apache-2.0"],
-      links: %{"GitHub" => "https://github.com/wardbekker/LokiLogger.git"}
+      links: %{"GitHub" => @source_url}
     ]
   end
 end
