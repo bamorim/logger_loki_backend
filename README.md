@@ -34,7 +34,7 @@ The package can be installed by adding `logger_loki_backend` to your list of dep
 ```elixir
 def deps do
   [
-    {:logger_loki_backend, "~> 0.3.0"}
+    {:logger_loki_backend, "~> 0.0.1"}
   ]
 end
 ```
